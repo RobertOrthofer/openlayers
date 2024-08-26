@@ -23,6 +23,7 @@ import {
   always,
   never,
   noModifierKeys,
+  pointerMove,
   shiftKeyOnly,
 } from '../events/condition.js';
 import {
@@ -40,6 +41,7 @@ import {
 } from '../coordinate.js';
 import {fromUserCoordinate, getUserProjection} from '../proj.js';
 import {getStrideForLayout} from '../geom/SimpleGeometry.js';
+import { createResolutionConstraint } from '../View.js';
 
 /**
  * @typedef {Object} Options
@@ -95,6 +97,9 @@ import {getStrideForLayout} from '../geom/SimpleGeometry.js';
  * @property {VectorSource} [traceSource] Source for features to trace.  If tracing is active and a `traceSource` is
  * not provided, the interaction's `source` will be used.  Tracing requires that the interaction is configured with
  * either a `traceSource` or a `source`.
+ * @property {import("../events/condition.js").Condition} [tracingTargetCondition]
+ * A function that takes an {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * boolean to indicate whether a geometry should be traced along.
  * @property {boolean} [wrapX=false] Wrap the world horizontally on the sketch
  * overlay.
  * @property {import("../geom/Geometry.js").GeometryLayout} [geometryLayout='XY'] Layout of the
@@ -222,6 +227,25 @@ function getTraceTargets(coordinate, features) {
 }
 
 /**
+ * @param {TraceTarget} traceTarget1 
+ * @param {TraceTarget} traceTarget2 
+ * @return {Boolean} 
+ */
+function traceTargetsEqual(traceTarget1, traceTarget2) {
+  const coordinates1 = traceTarget1.coordinates;
+  const coordinates2 = traceTarget2.coordinates;
+  if (coordinates1.length !== coordinates2.length ) {
+    return false;
+  }
+  for (let i = 0, ii = coordinates1.length; i < ii; i++) {
+    if (coordinates1[i][0] !== coordinates2[i][0] || coordinates1[i][1] !== coordinates2[i][1]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/**
  * @param {import("../coordinate.js").Coordinate} a One coordinate.
  * @param {import("../coordinate.js").Coordinate} b Another coordinate.
  * @return {number} The squared distance between the two coordinates.
@@ -303,6 +327,7 @@ function getCumulativeSquaredDistance(coordinates, startIndex, endIndex) {
  * @param {Array<TraceTarget>} targets The trace targets.
  */
 function appendGeometryTraceTargets(coordinate, geometry, targets) {
+  //console.log('append geometry trace target')
   if (geometry instanceof LineString) {
     appendTraceTarget(coordinate, geometry.getCoordinates(), false, targets);
     return;
@@ -931,6 +956,12 @@ class Draw extends PointerInteraction {
      */
     this.traceSource_ = options.traceSource || options.source || null;
 
+    /**
+     * @type {import("../events/condition.js").Condition}
+     * @private
+     */
+    this.tracingTargetCondition_ = options.tracingTargetCondition;
+
     this.addChangeListener(InteractionProperty.ACTIVE, this.updateState_);
   }
 
@@ -1003,6 +1034,64 @@ class Draw extends PointerInteraction {
         clearTimeout(this.downTimeout_);
         this.downTimeout_ = undefined;
       }
+    }
+
+    if (move && this.traceState_.active) {
+        const map = this.getMap();
+        const lowerLeft = map.getCoordinateFromPixel([
+          event.pixel[0] - this.snapTolerance_,
+          event.pixel[1] + this.snapTolerance_,
+        ]);
+        const upperRight = map.getCoordinateFromPixel([
+          event.pixel[0] + this.snapTolerance_,
+          event.pixel[1] - this.snapTolerance_,
+        ]);
+        const extent = boundingExtent([lowerLeft, upperRight]);
+        const features = this.traceSource_.getFeaturesInExtent(extent);
+        
+        const candidates = getTraceTargets(event.coordinate, features);
+        const targetLength = this.traceState_.targets.length;
+        const lastCoordinate = this.sketchPoint_.getGeometry().getCoordinates();
+        const squaredResolution = map.getView().getResolution() * map.getView().getResolution();
+        for (let i = 0, ii = candidates.length; i < ii; i++) {
+          const candidate = candidates[i];
+          if (this.traceState_.targets.find(t => traceTargetsEqual(t, candidate))) {
+            continue;
+          }
+          if (!this.traceState_.targets.includes(candidate)) {
+            for (let j = 0, jj = candidate.coordinates.length; j < jj; j++) {
+              if(getSquaredDistance(lastCoordinate, candidate.coordinates[j]) < squaredResolution) {
+                this.traceState_.targets.push(candidates[i]);
+              }
+            }
+          }
+
+
+          // hier müssen die benachbarten targets genommen werden
+          // von jedem Vertex getClosest point auf den letzten punkt des drawing
+
+          // ABER: die TraceTarget objekt sind keine Geometrien, sondern nur hilfsobjekte,
+          
+          
+          // aktuelles target rausschmeißen
+
+          // loop through, add to tracestate targets, if not already existing
+          // wenn wir auf ein neues Target kommen, müssen wir:
+          // toggleTraceState_
+
+          // dann müsste beim nächsten pointermove automatisch das toggleTraceState_
+          // wieder aufgerufen werden
+        }
+        //console.log(this.traceState_.targets);
+        if (this.traceState_.targets.length && targetLength !== this.traceState_.targets.length) {
+          this.createOrUpdateSketchPoint_(event.coordinate.slice());
+          //this.updateTrace_(event)
+          console.log('target changed');
+          this.traceState_.targetIndex = this.traceState_.targetIndex + 1
+        }
+
+        this.updateTrace_(event)
+        // then, call updateTrace_ when targets changed
     }
     if (
       this.freehand_ &&
@@ -1245,7 +1334,7 @@ class Draw extends PointerInteraction {
         return;
       }
     }
-
+    //console.log('UPDATE TRACE')
     const updatedTraceTarget = getTraceTargetUpdate(
       event.coordinate,
       traceState,
@@ -1269,6 +1358,7 @@ class Draw extends PointerInteraction {
       );
     } else {
       // target stayed the same
+      //console.log('target stayed the same')
       const target = traceState.targets[traceState.targetIndex];
       this.addOrRemoveTracedCoordinates_(target, updatedTraceTarget.endIndex);
     }
@@ -1367,7 +1457,7 @@ class Draw extends PointerInteraction {
       return;
     }
 
-    this.updateTrace_(event);
+    //this.updateTrace_(event);
     this.modifyDrawing_(event.coordinate);
   }
 
