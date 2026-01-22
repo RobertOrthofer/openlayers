@@ -13,10 +13,20 @@ class ImageTile extends Tile {
    * @param {import("./TileState.js").default} state State.
    * @param {string} src Image source URI.
    * @param {?string} crossOrigin Cross origin.
+   * @param {?ReferrerPolicy} referrerPolicy Referrer policy.
    * @param {import("./Tile.js").LoadFunction} tileLoadFunction Tile load function.
    * @param {import("./Tile.js").Options} [options] Tile options.
    */
-  constructor(tileCoord, state, src, crossOrigin, tileLoadFunction, options) {
+  constructor(
+    tileCoord,
+    state,
+    src,
+    crossOrigin,
+    referrerPolicy,
+    tileLoadFunction,
+    options,
+  ) {
+    debugger;
     super(tileCoord, state, options);
 
     /**
@@ -24,6 +34,12 @@ class ImageTile extends Tile {
      * @type {?string}
      */
     this.crossOrigin_ = crossOrigin;
+
+    /**
+     * @private
+     * @type {?ReferrerPolicy}
+     */
+    this.referrerPolicy_ = referrerPolicy;
 
     /**
      * Image URI
@@ -89,6 +105,14 @@ class ImageTile extends Tile {
    */
   getCrossOrigin() {
     return this.crossOrigin_;
+  }
+
+  /**
+   * Get the referrer policy of the ImageTile.
+   * @return {ReferrerPolicy} Referrer policy.
+   */
+  getReferrerPolicy() {
+    return this.referrerPolicy_;
   }
 
   /**
@@ -168,7 +192,11 @@ class ImageTile extends Tile {
       if (this.crossOrigin_ !== null) {
         this.image_.crossOrigin = this.crossOrigin_;
       }
+      if (this.referrerPolicy_ !== null) {
+        this.image_.referrerPolicy = this.referrerPolicy_;
+      }
     }
+    debugger;
     if (this.state == TileState.IDLE) {
       this.state = TileState.LOADING;
       this.changed();

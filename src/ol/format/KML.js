@@ -417,6 +417,7 @@ function defaultIconUrlFunction(href) {
  * @property {boolean} [writeStyles=true] Write styles into KML.
  * @property {null|string} [crossOrigin='anonymous'] The `crossOrigin` attribute for loaded images. Note that you must provide a
  * `crossOrigin` value if you want to access pixel data with the Canvas renderer.
+ * @property {null|ReferrerPolicy} [referrerPolicy] The `referrerPolicy` attribute for loaded images.
  * @property {IconUrlFunction} [iconUrlFunction] Function that takes a url string and returns a url string.
  * Might be used to change an icon path or to substitute a data url obtained from a KMZ array buffer.
  */

@@ -4,12 +4,12 @@
 import ImageTile from '../ImageTile.js';
 import TileState from '../TileState.js';
 import EventType from '../events/EventType.js';
-import {WORKER_OFFSCREEN_CANVAS} from '../has.js';
-import {equivalent, get as getProjection} from '../proj.js';
+import { WORKER_OFFSCREEN_CANVAS } from '../has.js';
+import { equivalent, get as getProjection } from '../proj.js';
 import ReprojTile from '../reproj/Tile.js';
-import {getCacheKey} from '../tilecoord.js';
-import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
-import {getUid} from '../util.js';
+import { getCacheKey } from '../tilecoord.js';
+import { getForProjection as getTileGridForProjection } from '../tilegrid.js';
+import { getUid } from '../util.js';
 import UrlTile from './UrlTile.js';
 
 /**
@@ -20,6 +20,7 @@ import UrlTile from './UrlTile.js';
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * @property {null|ReferrerPolicy} [referrerPolicy] The `referrerPolicy` attribute for loaded images.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
@@ -96,6 +97,13 @@ class TileImage extends UrlTile {
      */
     this.crossOrigin =
       options.crossOrigin !== undefined ? options.crossOrigin : null;
+
+    /**
+     * @protected
+     * @type {?ReferrerPolicy}
+     */
+    this.referrerPolicy =
+      options.referrerPolicy !== undefined ? options.referrerPolicy : null;
 
     /**
      * @protected
@@ -201,6 +209,7 @@ class TileImage extends UrlTile {
       tileUrl !== undefined ? TileState.IDLE : TileState.EMPTY,
       tileUrl !== undefined ? tileUrl : '',
       this.crossOrigin,
+      this.referrerPolicy,
       this.tileLoadFunction,
       this.tileOptions,
     );
@@ -327,6 +336,7 @@ export function defaultTileLoadFunction(imageTile, src) {
   if (WORKER_OFFSCREEN_CANVAS) {
     // special treatment for offscreen canvas
     const crossOrigin = imageTile.getCrossOrigin();
+    const referrerPolicy = imageTile.getReferrerPolicy();
 
     /** @type {RequestMode} */
     let mode = 'same-origin';
@@ -343,6 +353,7 @@ export function defaultTileLoadFunction(imageTile, src) {
     fetch(src, {
       mode,
       credentials,
+      referrerPolicy,
     })
       .then((response) => {
         if (!response.ok) {
