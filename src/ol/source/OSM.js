@@ -2,7 +2,6 @@
  * @module ol/source/OSM
  */
 
-import {WORKER_OFFSCREEN_CANVAS} from '../has.js';
 import {defaultTileLoadFunction} from './TileImage.js';
 import XYZ from './XYZ.js';
 
@@ -78,6 +77,7 @@ class OSM extends XYZ {
       attributionsCollapsible: false,
       cacheSize: options.cacheSize,
       crossOrigin: crossOrigin,
+      referrerPolicy: 'origin-when-cross-origin',
       interpolate: options.interpolate,
       maxZoom: options.maxZoom !== undefined ? options.maxZoom : 19,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
@@ -87,10 +87,6 @@ class OSM extends XYZ {
          * @param {string} src Image src
          */
         (tile, src) => {
-          const image = tile.getImage();
-          if (!WORKER_OFFSCREEN_CANVAS && image instanceof HTMLImageElement) {
-            image.referrerPolicy = 'origin-when-cross-origin';
-          }
           (options.tileLoadFunction || defaultTileLoadFunction)(tile, src);
         },
       transition: options.transition,

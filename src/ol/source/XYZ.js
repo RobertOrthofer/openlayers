@@ -2,7 +2,7 @@
  * @module ol/source/XYZ
  */
 
-import { createXYZ, extentFromProjection } from '../tilegrid.js';
+import {createXYZ, extentFromProjection} from '../tilegrid.js';
 import TileImage from './TileImage.js';
 
 /**
@@ -85,12 +85,12 @@ class XYZ extends TileImage {
       options.tileGrid !== undefined
         ? options.tileGrid
         : createXYZ({
-          extent: extentFromProjection(projection),
-          maxResolution: options.maxResolution,
-          maxZoom: options.maxZoom,
-          minZoom: options.minZoom,
-          tileSize: options.tileSize,
-        });
+            extent: extentFromProjection(projection),
+            maxResolution: options.maxResolution,
+            maxZoom: options.maxZoom,
+            minZoom: options.minZoom,
+            tileSize: options.tileSize,
+          });
 
     super({
       attributions: options.attributions,
