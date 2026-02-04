@@ -2,7 +2,7 @@
  * @module ol/source/XYZ
  */
 
-import {createXYZ, extentFromProjection} from '../tilegrid.js';
+import { createXYZ, extentFromProjection } from '../tilegrid.js';
 import TileImage from './TileImage.js';
 
 /**
@@ -13,6 +13,7 @@ import TileImage from './TileImage.js';
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * @property {null|ReferrerPolicy} [referrerPolicy] The `referrerPolicy` attribute for loaded images.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Projection.
@@ -84,17 +85,18 @@ class XYZ extends TileImage {
       options.tileGrid !== undefined
         ? options.tileGrid
         : createXYZ({
-            extent: extentFromProjection(projection),
-            maxResolution: options.maxResolution,
-            maxZoom: options.maxZoom,
-            minZoom: options.minZoom,
-            tileSize: options.tileSize,
-          });
+          extent: extentFromProjection(projection),
+          maxResolution: options.maxResolution,
+          maxZoom: options.maxZoom,
+          minZoom: options.minZoom,
+          tileSize: options.tileSize,
+        });
 
     super({
       attributions: options.attributions,
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
+      referrerPolicy: options.referrerPolicy,
       interpolate: options.interpolate,
       projection: projection,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
