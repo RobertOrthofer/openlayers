@@ -55,21 +55,27 @@ export function asColorLike(color) {
  */
 function asCanvasPattern(pattern) {
   if (!pattern.offset || !pattern.size) {
-    return iconCache.getPattern(pattern.src, 'anonymous', pattern.color);
+    return iconCache.getPattern(pattern.src, 'anonymous', null, pattern.color);
   }
 
   const cacheKey = pattern.src + ':' + pattern.offset;
 
   const canvasPattern = iconCache.getPattern(
     cacheKey,
-    undefined,
+    null,
+    null,
     pattern.color,
   );
   if (canvasPattern) {
     return canvasPattern;
   }
 
-  const iconImage = iconCache.get(pattern.src, 'anonymous', null);
+  const iconImage = iconCache.get(
+    pattern.src,
+    'anonymous',
+    null,
+    pattern.color,
+  );
   if (iconImage.getImageState() !== ImageState.LOADED) {
     return null;
   }
@@ -91,10 +97,11 @@ function asCanvasPattern(pattern) {
   getIconImage(
     patternCanvasContext.canvas,
     cacheKey,
-    undefined,
+    null,
+    null,
     ImageState.LOADED,
     pattern.color,
     true,
   );
-  return iconCache.getPattern(cacheKey, undefined, pattern.color);
+  return iconCache.getPattern(cacheKey, null, null, pattern.color);
 }

@@ -1,6 +1,6 @@
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
-import { createMockDiv } from '../../../../src/ol/dom.js';
+import {createMockDiv} from '../../../../src/ol/dom.js';
 import Layer from '../../../../src/ol/layer/Layer.js';
 
 /** @type {any} */

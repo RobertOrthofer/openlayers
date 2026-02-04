@@ -725,4 +725,31 @@ describe('ol/source/ImageWMS', function () {
       map.getView().setCenter(fromLonLat([361, 0]));
     });
   });
+
+  describe('crossOrigin and referrerPolicy', function () {
+    it('forwards crossOrigin and referrerPolicy to the image', function () {
+      const source = new ImageWMS({
+        ...options,
+        crossOrigin: 'anonymous',
+        referrerPolicy: 'no-referrer',
+      });
+      const image = source.getImage(extent, resolution, pixelRatio, projection);
+      image.load();
+      const imgElement = image.getImage();
+      expect(imgElement.crossOrigin).to.be('anonymous');
+      expect(imgElement.referrerPolicy).to.be('no-referrer');
+    });
+
+    it('uses default values when crossOrigin and referrerPolicy are not specified', function () {
+      const source = new ImageWMS(options);
+      const image = source.getImage(extent, resolution, pixelRatio, projection);
+      image.load();
+      const imgElement = image.getImage();
+      expect(imgElement.crossOrigin).to.be(null);
+      // referrerPolicy has a default browser value
+      expect(imgElement.referrerPolicy).to.be(
+        'strict-origin-when-cross-origin',
+      );
+    });
+  });
 });

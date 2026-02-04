@@ -43,6 +43,7 @@ describe('ol.style.Icon', function () {
         anchorYUnits: 'pixels',
         color: '#319FD3',
         crossOrigin: 'Anonymous',
+        referrerPolicy: 'no-referrer',
         img: canvas,
         offset: [1, 2],
         offsetOrigin: 'bottom-left',
@@ -62,6 +63,7 @@ describe('ol.style.Icon', function () {
       expect(original.anchorXUnits_).to.eql(clone.anchorXUnits_);
       expect(original.anchorYUnits_).to.eql(clone.anchorYUnits_);
       expect(original.crossOrigin_).to.eql(clone.crossOrigin_);
+      expect(original.referrerPolicy_).to.eql(clone.referrerPolicy_);
       expect(original.getColor()).to.eql(clone.getColor());
       expect(original.offset_).to.eql(clone.offset_);
       expect(original.offsetOrigin_).to.eql(clone.offsetOrigin_);

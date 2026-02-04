@@ -71,6 +71,7 @@ export function getImageSrc(
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * @property {null|ReferrerPolicy} [referrerPolicy] The `referrerPolicy` attribute for loaded images.
  * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting
  * the image from the remote server.
  * @property {Object<string,*>} [params] OGC Map request parameters.
@@ -96,6 +97,7 @@ export function createLoader(options) {
   const ratio = options.ratio || 1.5;
   const load = options.load || decode;
   const crossOrigin = options.crossOrigin ?? null;
+  const referrerPolicy = options.referrerPolicy ?? null;
 
   return (extent, resolution, pixelRatio) => {
     extent = getRequestExtent(extent, resolution, pixelRatio, ratio);
@@ -112,6 +114,9 @@ export function createLoader(options) {
     );
     const image = new Image();
     image.crossOrigin = crossOrigin;
+    if (referrerPolicy !== null) {
+      image.referrerPolicy = referrerPolicy;
+    }
     return load(image, src).then((image) => ({image, extent, pixelRatio}));
   };
 }

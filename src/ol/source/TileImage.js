@@ -4,12 +4,12 @@
 import ImageTile from '../ImageTile.js';
 import TileState from '../TileState.js';
 import EventType from '../events/EventType.js';
-import { WORKER_OFFSCREEN_CANVAS } from '../has.js';
-import { equivalent, get as getProjection } from '../proj.js';
+import {WORKER_OFFSCREEN_CANVAS} from '../has.js';
+import {equivalent, get as getProjection} from '../proj.js';
 import ReprojTile from '../reproj/Tile.js';
-import { getCacheKey } from '../tilecoord.js';
-import { getForProjection as getTileGridForProjection } from '../tilegrid.js';
-import { getUid } from '../util.js';
+import {getCacheKey} from '../tilecoord.js';
+import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
+import {getUid} from '../util.js';
 import UrlTile from './UrlTile.js';
 
 /**

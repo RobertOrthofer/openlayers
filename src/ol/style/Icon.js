@@ -35,6 +35,7 @@ import ImageStyle from './Image.js';
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images. Note that you must provide a
  * `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * @property {null|ReferrerPolicy} [referrerPolicy] The `referrerPolicy` attribute for loaded images.
  * @property {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} [img] Image object for the icon.
  * @property {Array<number>} [displacement=[0, 0]] Displacement of the icon in pixels.
  * Positive values will shift the icon right and up.
@@ -157,6 +158,13 @@ class Icon extends ImageStyle {
     this.crossOrigin_ =
       options.crossOrigin !== undefined ? options.crossOrigin : null;
 
+    /**
+     * @private
+     * @type {?ReferrerPolicy}
+     */
+    this.referrerPolicy_ =
+      options.referrerPolicy !== undefined ? options.referrerPolicy : null;
+
     const image = options.img !== undefined ? options.img : null;
 
     let cacheKey = options.src;
@@ -211,6 +219,7 @@ class Icon extends ImageStyle {
       image,
       /** @type {string} */ (cacheKey),
       this.crossOrigin_,
+      this.referrerPolicy_,
       imageState,
       this.color_,
     );
@@ -310,6 +319,7 @@ class Icon extends ImageStyle {
           ? this.color_.slice()
           : this.color_ || undefined,
       crossOrigin: this.crossOrigin_,
+      referrerPolicy: this.referrerPolicy_,
       offset: this.offset_.slice(),
       offsetOrigin: this.offsetOrigin_,
       opacity: this.getOpacity(),
@@ -437,6 +447,7 @@ class Icon extends ImageStyle {
       image,
       src,
       this.crossOrigin_,
+      this.referrerPolicy_,
       imageState,
       this.color_,
     );
@@ -544,6 +555,7 @@ class Icon extends ImageStyle {
       null,
       src,
       this.crossOrigin_,
+      this.referrerPolicy_,
       ImageState.IDLE,
       this.color_,
     );

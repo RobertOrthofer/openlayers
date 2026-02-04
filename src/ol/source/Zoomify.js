@@ -24,6 +24,7 @@ export class CustomTile extends ImageTile {
    * @param {import("../TileState.js").default} state State.
    * @param {string} src Image source URI.
    * @param {?string} crossOrigin Cross origin.
+   * @param {?ReferrerPolicy} referrerPolicy Referrer policy.
    * @param {import("../Tile.js").LoadFunction} tileLoadFunction Tile load function.
    * @param {import("../Tile.js").Options} [options] Tile options.
    */
@@ -33,10 +34,19 @@ export class CustomTile extends ImageTile {
     state,
     src,
     crossOrigin,
+    referrerPolicy,
     tileLoadFunction,
     options,
   ) {
-    super(tileCoord, state, src, crossOrigin, tileLoadFunction, options);
+    super(
+      tileCoord,
+      state,
+      src,
+      crossOrigin,
+      referrerPolicy,
+      tileLoadFunction,
+      options,
+    );
 
     /**
      * @private
@@ -83,6 +93,7 @@ export class CustomTile extends ImageTile {
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value  you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * @property {null|ReferrerPolicy} [referrerPolicy] The `referrerPolicy` attribute for loaded images.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection.
@@ -249,6 +260,7 @@ class Zoomify extends TileImage {
       attributions: options.attributions,
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
+      referrerPolicy: options.referrerPolicy,
       interpolate: options.interpolate,
       projection: options.projection,
       tilePixelRatio: tilePixelRatio,

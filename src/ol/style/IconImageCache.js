@@ -72,34 +72,37 @@ class IconImageCache {
   /**
    * @param {string} src Src.
    * @param {?string} crossOrigin Cross origin.
+   * @param {?ReferrerPolicy} referrerPolicy Referrer policy.
    * @param {import("../color.js").Color|string|null} color Color.
    * @return {import("./IconImage.js").default} Icon image.
    */
-  get(src, crossOrigin, color) {
-    const key = getCacheKey(src, crossOrigin, color);
+  get(src, crossOrigin, referrerPolicy, color) {
+    const key = getCacheKey(src, crossOrigin, referrerPolicy, color);
     return key in this.cache_ ? this.cache_[key] : null;
   }
 
   /**
    * @param {string} src Src.
    * @param {?string} crossOrigin Cross origin.
+   * @param {?ReferrerPolicy} referrerPolicy Referrer policy.
    * @param {import("../color.js").Color|string|null} color Color.
    * @return {CanvasPattern} Icon image.
    */
-  getPattern(src, crossOrigin, color) {
-    const key = getCacheKey(src, crossOrigin, color);
+  getPattern(src, crossOrigin, referrerPolicy, color) {
+    const key = getCacheKey(src, crossOrigin, referrerPolicy, color);
     return key in this.patternCache_ ? this.patternCache_[key] : null;
   }
 
   /**
    * @param {string} src Src.
    * @param {?string} crossOrigin Cross origin.
+   * @param {?ReferrerPolicy} referrerPolicy Referrer policy.
    * @param {import("../color.js").Color|string|null} color Color.
    * @param {import("./IconImage.js").default|null} iconImage Icon image.
    * @param {boolean} [pattern] Also cache a `'repeat'` pattern with this `iconImage`.
    */
-  set(src, crossOrigin, color, iconImage, pattern) {
-    const key = getCacheKey(src, crossOrigin, color);
+  set(src, crossOrigin, referrerPolicy, color, iconImage, pattern) {
+    const key = getCacheKey(src, crossOrigin, referrerPolicy, color);
     const update = key in this.cache_;
     this.cache_[key] = iconImage;
     if (pattern) {
@@ -141,12 +144,13 @@ class IconImageCache {
 /**
  * @param {string} src Src.
  * @param {?string} crossOrigin Cross origin.
+ * @param {?ReferrerPolicy} referrerPolicy Referrer policy.
  * @param {import("../color.js").Color|string|null} color Color.
  * @return {string} Cache key.
  */
-export function getCacheKey(src, crossOrigin, color) {
+export function getCacheKey(src, crossOrigin, referrerPolicy, color) {
   const colorString = color ? asArray(color) : 'null';
-  return crossOrigin + ':' + src + ':' + colorString;
+  return crossOrigin + ':' + referrerPolicy + ':' + src + ':' + colorString;
 }
 
 export default IconImageCache;

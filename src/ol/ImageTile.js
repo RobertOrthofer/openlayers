@@ -26,7 +26,6 @@ class ImageTile extends Tile {
     tileLoadFunction,
     options,
   ) {
-    debugger;
     super(tileCoord, state, options);
 
     /**
@@ -63,6 +62,9 @@ class ImageTile extends Tile {
       this.image_ = new Image();
       if (crossOrigin !== null) {
         this.image_.crossOrigin = crossOrigin;
+      }
+      if (referrerPolicy !== null) {
+        this.image_.referrerPolicy = referrerPolicy;
       }
     }
 
@@ -196,7 +198,6 @@ class ImageTile extends Tile {
         this.image_.referrerPolicy = this.referrerPolicy_;
       }
     }
-    debugger;
     if (this.state == TileState.IDLE) {
       this.state = TileState.LOADING;
       this.changed();

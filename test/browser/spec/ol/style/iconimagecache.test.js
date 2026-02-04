@@ -66,7 +66,7 @@ describe('ol.style.IconImageCache', function () {
       for (i = 0; i < 3; ++i) {
         src = i + '';
         iconImage = new IconImage(null, src);
-        iconImageCache.set(src, null, null, iconImage);
+        iconImageCache.set(src, null, null, null, iconImage);
       }
 
       expect(iconImageCache.cacheSize_).to.eql(3);

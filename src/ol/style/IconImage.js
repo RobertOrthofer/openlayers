@@ -20,10 +20,11 @@ class IconImage extends EventTarget {
    * @param {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap|null} image Image.
    * @param {string|undefined} src Src.
    * @param {?string} crossOrigin Cross origin.
+   * @param {?ReferrerPolicy} referrerPolicy Referrer policy.
    * @param {import("../ImageState.js").default|undefined} imageState Image state.
    * @param {import("../color.js").Color|string|null} color Color.
    */
-  constructor(image, src, crossOrigin, imageState, color) {
+  constructor(image, src, crossOrigin, referrerPolicy, imageState, color) {
     super();
 
     /**
@@ -43,6 +44,12 @@ class IconImage extends EventTarget {
      * @type {string|null}
      */
     this.crossOrigin_ = crossOrigin;
+
+    /**
+     * @private
+     * @type {?ReferrerPolicy}
+     */
+    this.referrerPolicy_ = referrerPolicy;
 
     /**
      * @private
@@ -310,32 +317,56 @@ class IconImage extends EventTarget {
  * @param {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap|null} image Image.
  * @param {string|undefined} cacheKey Src.
  * @param {?string} crossOrigin Cross origin.
+ * @param {?ReferrerPolicy} referrerPolicy Referrer policy.
  * @param {import("../ImageState.js").default|undefined} imageState Image state.
  * @param {import("../color.js").Color|string|null} color Color.
  * @param {boolean} [pattern] Also cache a `repeat` pattern with the icon image.
  * @return {IconImage} Icon image.
  */
-export function get(image, cacheKey, crossOrigin, imageState, color, pattern) {
+export function get(
+  image,
+  cacheKey,
+  crossOrigin,
+  referrerPolicy,
+  imageState,
+  color,
+  pattern,
+) {
   let iconImage =
     cacheKey === undefined
       ? undefined
-      : iconImageCache.get(cacheKey, crossOrigin, color);
+      : iconImageCache.get(cacheKey, crossOrigin, referrerPolicy, color);
   if (!iconImage) {
     iconImage = new IconImage(
       image,
       image && 'src' in image ? image.src || undefined : cacheKey,
       crossOrigin,
+      referrerPolicy,
       imageState,
       color,
     );
-    iconImageCache.set(cacheKey, crossOrigin, color, iconImage, pattern);
+    iconImageCache.set(
+      cacheKey,
+      crossOrigin,
+      referrerPolicy,
+      color,
+      iconImage,
+      pattern,
+    );
   }
   if (
     pattern &&
     iconImage &&
-    !iconImageCache.getPattern(cacheKey, crossOrigin, color)
+    !iconImageCache.getPattern(cacheKey, crossOrigin, referrerPolicy, color)
   ) {
-    iconImageCache.set(cacheKey, crossOrigin, color, iconImage, pattern);
+    iconImageCache.set(
+      cacheKey,
+      crossOrigin,
+      referrerPolicy,
+      color,
+      iconImage,
+      pattern,
+    );
   }
   return iconImage;
 }
