@@ -35,7 +35,7 @@ describe('ol.TileQueue', function () {
     const tileLoadFunction = opt_tileLoadFunction
       ? opt_tileLoadFunction
       : defaultImageLoadFunction;
-    return new ImageTile(tileCoord, state, src, null, tileLoadFunction);
+    return new ImageTile(tileCoord, state, src, null, null, tileLoadFunction);
   }
 
   describe('#loadMoreTiles()', function () {

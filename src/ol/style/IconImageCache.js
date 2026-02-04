@@ -149,8 +149,11 @@ class IconImageCache {
  * @return {string} Cache key.
  */
 export function getCacheKey(src, crossOrigin, referrerPolicy, color) {
+  const referrerPolicyString = referrerPolicy || 'null';
   const colorString = color ? asArray(color) : 'null';
-  return crossOrigin + ':' + referrerPolicy + ':' + src + ':' + colorString;
+  return (
+    crossOrigin + ':' + referrerPolicyString + ':' + src + ':' + colorString
+  );
 }
 
 export default IconImageCache;

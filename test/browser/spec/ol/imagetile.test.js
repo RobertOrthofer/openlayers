@@ -11,7 +11,14 @@ describe('ol.ImageTile', function () {
       const state = TileState.IDLE;
       const src = 'spec/ol/data/osm-0-0-0.png';
       const tileLoadFunction = defaultImageLoadFunction;
-      const tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
+      const tile = new ImageTile(
+        tileCoord,
+        state,
+        src,
+        null,
+        null,
+        tileLoadFunction,
+      );
 
       let previousState = tile.getState();
 
@@ -36,7 +43,14 @@ describe('ol.ImageTile', function () {
       const state = TileState.ERROR;
       const src = 'spec/ol/data/osm-0-0-0.png';
       const tileLoadFunction = defaultImageLoadFunction;
-      const tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
+      const tile = new ImageTile(
+        tileCoord,
+        state,
+        src,
+        null,
+        null,
+        tileLoadFunction,
+      );
 
       let previousState = tile.getState();
 
@@ -61,7 +75,14 @@ describe('ol.ImageTile', function () {
       const state = TileState.IDLE;
       const src = 'spec/ol/data/osm-0-0-99.png';
       const tileLoadFunction = defaultImageLoadFunction;
-      const tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
+      const tile = new ImageTile(
+        tileCoord,
+        state,
+        src,
+        null,
+        null,
+        tileLoadFunction,
+      );
 
       const key = listen(tile, EventType.CHANGE, function (event) {
         const state = tile.getState();

@@ -49,6 +49,7 @@ describe('ol.reproj.Tile', function () {
           'data:image/gif;base64,' +
             'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',
           null,
+          null,
           function (tile, src) {
             tile.getImage().src = src;
           },
